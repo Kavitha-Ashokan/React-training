@@ -1,82 +1,133 @@
-import React, { useState, useReducer } from "react";
-import { Form, Field } from "react-final-form";
+import React from "react";
+import { Form } from "react-final-form";
+import { connect } from "react-redux";
+import isEmpty from "lodash/isEmpty";
 import TextInput from "../Input/TextInput";
+import SelectDropdown from "../Input/SelectDropdown";
 import "./form.css";
-import reducer from "../Reducer/reducer";
+import { fromSubmit } from "../Reducer/actions";
 
-const initialState = { formData: {} };
-const FormHandle = () => {
-  const [check, setCheck] = useState(true);
-  const [state, dispatch] = useReducer(reducer, initialState);
+const countryOptions = [
+  { value: "India", label: "India" },
+  { value: "Austraila", label: "Austraila" },
+  { value: "France", label: "France" },
+  { value: "Germany", label: "Germany" },
+];
 
-  const checkBoxHandler = () => { //checkBoxHandler function for handle checkbox click
-    setCheck(!check);
-  };
-  const onSubmit = (values) => { //dispatch action type and payload to reducer
-    dispatch({ type: "FORM_DATA", payload: values });
-  };
+const stateOptions = [
+  { value: "TamilNadu", label: "TamilNadu" },
+  { value: "Kerala", label: "Kerala" },
+  { value: "Maharashtra", label: "Maharashtra" },
+  { value: "Karnataka", label: "Karnataka" },
+];
+
+const FormHandle = ({ state, fromSubmitData }) => {
+  const required = (value) => (value ? undefined : "Required");
+  const mustBeNumber = (value) =>
+    isNaN(value) ? "Must be a number" : undefined;
+
+    const onSubmit =  (values) => {
+      //dispatch action type and payload to reducer
+  
+       fromSubmitData(values);
+    };
   return (
     <div>
-      <Form onSubmit={onSubmit}>
-        {({ handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
+      <Form
+        onSubmit={onSubmit}
+        render={({ handleSubmit }) => (
+          <form
+            onSubmit={(event) => {
+              handleSubmit(event);
+            }}
+          >
             <h1>Shipping Address</h1>
             <label>Name</label>
-            <TextInput name="name" placeholder="Name" type="text" />
+            <TextInput
+              validate={required}
+              name="name"
+              placeholder="Name"
+              type="text"
+            />
             <label>Address</label>
-            <TextInput name="address" placeholder="Address" type="text" />
+            <TextInput
+              validate={required}
+              name="address"
+              placeholder="Address"
+              type="text"
+            />
             <label>City</label>
-            <TextInput name="city" placeholder="City" type="text" />
+            <TextInput
+              validate={required}
+              name="city"
+              placeholder="City"
+              type="text"
+            />
             <label>Country</label>
             <br />
-            <Field name="country">
-              {({ select }) => (
-                <select type="select" required {...select}>
-                  <option value="India">India</option>
-                  <option value="Belgium">Belgium</option>
-                  <option value="France">France</option>
-                  <option value="Germany">Germany</option>
-                </select>
-              )}
-            </Field>
+
+            <SelectDropdown
+              name="country"
+              defaultValue="India"
+              options={countryOptions}
+            />
             <br />
             <label>State</label>
             <br />
-            <Field name="state">
-              {({ select }) => (
-                <select type="select" required {...select}>
-                  <option value="TamilNadu">TamilNadu</option>
-                  <option value="karnataka">Karnataka</option>
-                  <option value="mumbai">Mumbai</option>
-                </select>
-              )}
-            </Field>
+
+            <SelectDropdown
+              name="state"
+              defaultValue="TamilNadu"
+              options={stateOptions}
+            />
             <br />
             <label>Pincode</label>
-            <TextInput name="pincode" placeholder="Pincode" type="text" />
+            <TextInput
+              validate={mustBeNumber}
+              name="pincode"
+              placeholder="Pincode"
+              type="text"
+            />
             <label>Phone</label>
-            <TextInput name="phone" placeholder="Phone" type="text" />
+            <TextInput
+              validate={mustBeNumber}
+              name="phone"
+              placeholder="Phone"
+              type="text"
+            />
             <div className="check-box-div">
               <TextInput
-                name="check"
+                validate={required}
+                name="checkbox"
                 type="checkbox"
                 className="check-box"
-                onClick={checkBoxHandler}
               />
-              <label className="check-text">
-                check if shipping and billing address are different
-              </label>
+              <p className="check-text">
+                {"  "} check if shipping and billing address are different
+              </p>
             </div>
-            <button disabled={check} type="submit">
-              Ship To This Address
-            </button>
+            <button type="submit">Ship To This Address</button>
           </form>
         )}
-      </Form>
-      {Object.keys(state.formData).map(function (key, index) {
-        return <p key={key}>{key !== "check" && `${key} : ${state.formData[key]}  `}</p>;
-      })}
+      />
+      {!isEmpty(state) &&
+        Object.keys(state.formData).map(function (key) {
+          return (
+            <p key={key}>
+              {key !== "checkbox" && `${key} : ${state.formData[key]}  `}
+            </p>
+          );
+        })}
     </div>
   );
 };
-export default FormHandle;
+
+const mapStateToProps = (state) => {
+  return { state };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  fromSubmitData: (data) => dispatch(fromSubmit(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormHandle);
