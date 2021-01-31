@@ -11,7 +11,6 @@ import { TextInput } from "./Input/TextInput";
 import { initialValues } from "./InitialValues/InitialValues";
 import { required, mustBeNumber, focusOnError, minLength, composeValidators  } from "./Validation/Validation";
 import Modal from "./Modal/Modal";
-import './index.css';
 
 const App = () => { 
   const [modalData, setModalData] = useState({ isOpen: false, values: {} });
@@ -36,15 +35,20 @@ const App = () => {
             <form onSubmit={(event) => { handleSubmit(event); }}>
               <FormStateToRedux form="example" />
               <h1>Shipping Address</h1>
-              <TextInput className="input-box" validate={required} name="name" placeholder="Name" label="Name" type="text" /><br />
-              <TextInput className="input-box" validate={required} name="address" placeholder="Address" label="Address" type="text" /><br />
-              <TextInput className="input-box" validate={required} name="city" placeholder="City" label="City" type="text" /><br /><br />
-              <label>Country</label>
-              <SelectDropdown  name="country" defaultValue="India" options={countryOptions} /><br /><br /><br />
-              <label>State</label>
+              <label>Name</label>
+              <TextInput validate={required} name="name" placeholder="Name" type="text" /><br />
+              <label>Address</label>
+              <TextInput validate={required} name="address" placeholder="Address" type="text" /><br />
+              <label>City</label>
+              <TextInput validate={required} name="city" placeholder="City" type="text" /><br />
+              <label>Country</label><br />
+              <SelectDropdown name="country" defaultValue="India" options={countryOptions} /><br /><br />
+              <label>State</label><br />
               <SelectDropdown name="state" defaultValue="TamilNadu" options={stateOptions} /><br /><br />
-              <TextInput className="input-box" validate={mustBeNumber} name="pincode" placeholder="Pincode" label="Pincode" type="text" /><br />
-              <TextInput className="input-box" validate={composeValidators(mustBeNumber,required, minLength(10))} label="PhoneNo" name="phone" placeholder="Phone" type="text" /><br />
+              <label>Pincode</label>
+              <TextInput validate={mustBeNumber} name="pincode" placeholder="Pincode" type="text" /><br />
+              <label>Phone</label>
+              <TextInput validate={composeValidators(mustBeNumber,required, minLength(10))} name="phone" placeholder="Phone" type="text" /><br />
               <div className="check-box-div">
                 <TextInput name="checkbox" type="checkbox" className="check-box" />
                 <p className="check-text">

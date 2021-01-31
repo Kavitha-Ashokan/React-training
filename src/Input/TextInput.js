@@ -1,30 +1,44 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Field } from "react-final-form";
 
-const TextInput = ({
+/**
+ * @param name - input name ,props received by default
+ * @param label -label ,props received by default
+ * @param validate - input validation  ,props received by default
+ * @param values -received from redux
+ * @param type -received input types ,props received by default
+ */
+
+export const TextInput = ({
   validate,
   name,
   placeholder,
   className,
   onClick,
   type,
+  label
 }) => {
   return (
     <div className="text-input">
-      <Field name={name} validate={validate} type={type}>
+      <Field name={name} type={type} validate={validate} label={label}>
         {({ input, meta }) => (
-          <Fragment>
+          <>
+          <label>{label}</label>
             <input
               placeholder={placeholder}
               className={className}
               type={type}
               {...input}
             />
-            {meta.error && meta.touched && <span>{meta.error}</span>}
-          </Fragment>
+            {(meta.error || meta.submitError) && meta.touched && (
+              <>
+                <span>{meta.error}</span>
+                <span>{meta.submitError}</span>
+              </>
+            )}
+          </>
         )}
       </Field>
     </div>
   );
 };
-export default TextInput;
