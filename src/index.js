@@ -13,7 +13,11 @@ import { required, mustBeNumber, focusOnError, minLength, composeValidators  } f
 import Modal from "./Modal/Modal";
 import './index.css';
 
-const App = () => { 
+/**
+ * @param mockData - Array of Form Values stored
+ * @param values - returned form values
+ */
+export const App = () => { 
   const [modalData, setModalData] = useState({ isOpen: false, values: {} });
 
   const onHide = () => {
