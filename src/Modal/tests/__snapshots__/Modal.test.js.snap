@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`check props correctly rendered 1`] = `null`;
+
+exports[`should render and match the snapshot 1`] = `null`;
